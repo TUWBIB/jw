@@ -107,12 +107,15 @@ INSTALLED_APPS = [
 
     # Forms
     'django.forms',
+
+    # Themes
+    'themes.hourglass',
 ]
 
 INSTALLED_APPS += plugin_installed_apps.load_plugin_apps(BASE_DIR)
 INSTALLED_APPS += plugin_installed_apps.load_homepage_element_apps(BASE_DIR)
 
-MIDDLEWARE = (
+MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -132,7 +135,21 @@ MIDDLEWARE = (
     'journal.middleware.LanguageMiddleware',
     'hijack.middleware.HijackUserMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
-)
+    "django_components.middleware.ComponentDependencyMiddleware",    
+]
+
+DEBUG = True
+try:
+    if DEBUG:
+        INTERNAL_IPS = ('127.0.0.1',)
+        MIDDLEWARE.append('debug_toolbar.middleware.DebugToolbarMiddleware')
+        INSTALLED_APPS.append('debug_toolbar.apps.DebugToolbarConfig')
+except ImportError:
+    pass
+
+
+INSTALLED_APPS.append('django_components')
+
 
 ROOT_URLCONF = 'core.urls'
 
@@ -165,6 +182,7 @@ TEMPLATES = [
             'loaders': [
                 'utils.template_override_middleware.Loader',
                 'django.template.loaders.filesystem.Loader',
+                'django_components.template_loader.Loader',
                 'django.template.loaders.app_directories.Loader',
             ],
             'builtins': [

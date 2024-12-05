@@ -23,7 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('summernote/', include('django_summernote.urls')),
     path('', include('core.include_urls')),
-]
+    path('components/', include("django_components.urls")),
+]    
 
 try:
     if settings.DEBUG or settings.IN_TEST_RUNNER:
